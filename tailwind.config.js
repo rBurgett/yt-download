@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
+  content: [
+    // './src/index.html'
+  ],
   theme: {
     extend: {},
   },
@@ -11,6 +13,7 @@ module.exports = {
     themes: [
       'corporate',
       'business',
+      'synthwave',
     ],
   },
 }
