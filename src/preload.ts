@@ -1,10 +1,18 @@
-import { ipcRenderer } from 'electron';
-import { IpcEvent, LocalStorageKey, UiMode } from './constants';
+import { contextBridge, ipcRenderer } from 'electron';
+import { IpcEvent, LocalStorageKey, UiMode, youtubePatt } from './constants';
 
 document.addEventListener('DOMContentLoaded', () => {
   const selectedTheme = getTheme();
   setTheme(selectedTheme);
+
   ipcRenderer.send(IpcEvent.UiModeSet, selectedTheme);
+  getClipboardContents()
+    .then(text => {
+      if (youtubePatt.test(text)) {
+        const input = document.querySelector('#js-urlInput') as HTMLInputElement;
+        input.value = text;
+      }
+    });
 });
 
 ipcRenderer.on(IpcEvent.SetUiMode, (_, arg: UiMode) => {
@@ -26,4 +34,21 @@ function getTheme(): UiMode {
 
 function saveTheme(theme: UiMode): void {
   localStorage.setItem(LocalStorageKey.UiMode, theme);
+}
+
+async function downloadVideo(url: string): Promise<void> {
+  return await ipcRenderer.invoke(IpcEvent.StartDownload, url);
+}
+
+contextBridge.exposeInMainWorld('electron', {
+  downloadVideo,
+});
+
+ipcRenderer.on(IpcEvent.DownloadProgress, (_, arg: string) => {
+  const input = document.querySelector('#js-urlInput') as HTMLInputElement;
+  input.value = arg;
+});
+
+async function getClipboardContents(): Promise<string> {
+  return await ipcRenderer.invoke(IpcEvent.GetClipboardText);
 }

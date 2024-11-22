@@ -5,8 +5,16 @@
     <title>YT Download</title>
 
   </head>
-  <body>
-    <h1>YT Download</h1>
-    <p>Your yt-dlp Downloader, Will not break if YouTube changes its code so the YouTube downloaders do not work, but this one will.</p>
+  <body class="px-2">
+    <h1 class="text-5xl mt-1 mb-3 text-center">YT Download</h1>
+    <form id="js-urlForm">
+      <div class="mb-2">
+        <input class="input input-bordered w-full max-w text-center" type="url"
+               id="js-urlInput" placeholder="Enter URL of a YouTube video" required/>
+      </div>
+      <div class="mb-2">
+        <button id="js-submitButton" class="btn btn-secondary w-full max-w" type="submit">Download</button>
+      </div>
+    </form>
   </body>
 </html>

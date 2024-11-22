@@ -29,3 +29,38 @@
 import './index.css';
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
+
+const form = document.querySelector('#js-urlForm') as HTMLFormElement;
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const input = getInput();
+  const submitButton = getSubmitButton();
+  try {
+    const url = input.value;
+    const youtubePatt = /^https:\/\/.*?youtube\.com/
+    if (!youtubePatt.test(url)) {
+      throw new Error('Invalid URL');
+    }
+    input.readOnly = true;
+    submitButton.disabled = true;
+    const filename = await window.electron.downloadVideo(url);
+    input.readOnly = false;
+    submitButton.disabled = false;
+    if (filename) {
+      input.value = '';
+      alert(`Successfully downloaded: ${filename}`);
+    }
+  } catch(err) {
+    input.readOnly = false;
+    submitButton.disabled = false;
+    alert(`Oops! ${err}`);
+  }
+});
+
+function getInput(): HTMLInputElement {
+  return document.querySelector('#js-urlInput') as HTMLInputElement;
+}
+
+function getSubmitButton(): HTMLButtonElement {
+  return document.querySelector('#js-submitButton') as HTMLButtonElement;
+}
