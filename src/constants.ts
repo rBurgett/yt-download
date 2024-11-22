@@ -21,5 +21,3 @@ export enum DownloadEvent {
   Error = 'error',
   Done = 'done',
 }
-
-export const youtubePatt = /^https:\/\/.*?youtube\.com/

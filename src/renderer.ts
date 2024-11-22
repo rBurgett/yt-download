@@ -37,8 +37,7 @@ form.addEventListener('submit', async e => {
   const submitButton = getSubmitButton();
   try {
     const url = input.value;
-    const youtubePatt = /^https:\/\/.*?youtube\.com/
-    if (!youtubePatt.test(url)) {
+    if (!window.electron.isValidYouTubeUrl(url)) {
       throw new Error('Invalid URL');
     }
     input.readOnly = true;

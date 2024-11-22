@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { IpcEvent, LocalStorageKey, UiMode, youtubePatt } from './constants';
+import { IpcEvent, LocalStorageKey, UiMode } from './constants';
 
 document.addEventListener('DOMContentLoaded', () => {
   const selectedTheme = getTheme();
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ipcRenderer.send(IpcEvent.UiModeSet, selectedTheme);
   getClipboardContents()
     .then(text => {
-      if (youtubePatt.test(text)) {
+      if (isValidYouTubeUrl(text)) {
         const input = document.querySelector('#js-urlInput') as HTMLInputElement;
         input.value = text;
       }
@@ -42,6 +42,7 @@ async function downloadVideo(url: string): Promise<void> {
 
 contextBridge.exposeInMainWorld('electron', {
   downloadVideo,
+  isValidYouTubeUrl,
 });
 
 ipcRenderer.on(IpcEvent.DownloadProgress, (_, arg: string) => {
@@ -51,4 +52,8 @@ ipcRenderer.on(IpcEvent.DownloadProgress, (_, arg: string) => {
 
 async function getClipboardContents(): Promise<string> {
   return await ipcRenderer.invoke(IpcEvent.GetClipboardText);
+}
+
+function isValidYouTubeUrl(url: string): boolean {
+  return /^https:\/\/.*?youtube\.com/.test(url);
 }
