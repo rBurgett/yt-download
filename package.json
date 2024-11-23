@@ -1,6 +1,6 @@
 {
   "name": "yt-download",
-  "productName": "yt-download",
+  "productName": "YT Download",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
