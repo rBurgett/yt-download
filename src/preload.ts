@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedTheme = getTheme();
   setTheme(selectedTheme);
 
+  const version = ipcRenderer.sendSync(IpcEvent.GetVersion) as string;
+  document.title = `YT Download v${version}`;
+
   ipcRenderer.send(IpcEvent.UiModeSet, selectedTheme);
   getClipboardContents()
     .then(text => {

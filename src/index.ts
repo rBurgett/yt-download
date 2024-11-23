@@ -219,6 +219,10 @@ ipcMain.handle(IpcEvent.GetClipboardText, async (event): Promise<string> => {
   return clipboard.readText();
 });
 
+ipcMain.on(IpcEvent.GetVersion, event => {
+  event.returnValue = app.getVersion();
+});
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

@@ -4,6 +4,7 @@ export enum IpcEvent {
   StartDownload = 'start-download',
   DownloadProgress = 'download-progress',
   GetClipboardText = 'get-clipboard-text',
+  GetVersion = 'get-version',
 }
 
 export enum LocalStorageKey {
