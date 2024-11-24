@@ -4,10 +4,10 @@ import { DownloadEvent } from './constants';
 
 export class Downloader extends EventEmitter {
 
-  start(url: string, filePath: string): Promise<void> {
+  start(ytdlpFilePath: string, url: string, filePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const cp = spawn(
-        'yt-dlp',
+        ytdlpFilePath,
         [
           '-S', 'res:1080,ext:mp4',
           '-o', filePath,

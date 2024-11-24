@@ -5,6 +5,9 @@ export enum IpcEvent {
   DownloadProgress = 'download-progress',
   GetClipboardText = 'get-clipboard-text',
   GetVersion = 'get-version',
+  YtdlpDownloadProgress = 'ytdlp-download-progress',
+  IsYtdlpInstalled = 'is-ytdlp-installed',
+  DownloadYtdlp = 'download-ytdlp',
 }
 
 export enum LocalStorageKey {

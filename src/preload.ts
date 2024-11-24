@@ -9,12 +9,30 @@ document.addEventListener('DOMContentLoaded', () => {
   document.title = `YT Download v${version}`;
 
   ipcRenderer.send(IpcEvent.UiModeSet, selectedTheme);
-  getClipboardContents()
-    .then(text => {
-      if (isValidYouTubeUrl(text)) {
-        const input = document.querySelector('#js-urlInput') as HTMLInputElement;
-        input.value = text;
+
+  ipcRenderer.invoke(IpcEvent.IsYtdlpInstalled)
+    .then(async(isInstalled: boolean) => {
+      if (!isInstalled) {
+        const confirmed = confirm('yt-dlp must be installed to use YT Download. Would you like to install it now?');
+        if (confirmed) {
+          await ipcRenderer.invoke(IpcEvent.DownloadYtdlp);
+        }
       }
+      const input = getInput();
+      input.value = '';
+      input.readOnly = false;
+      const button = getSubmitButton();
+      button.disabled = false;
+      getClipboardContents()
+        .then(text => {
+          if (isValidYouTubeUrl(text)) {
+            const input = document.querySelector('#js-urlInput') as HTMLInputElement;
+            input.value = text;
+          }
+        });
+    })
+    .catch(err => {
+      alert(`Oops! ${err}`);
     });
 });
 
@@ -48,8 +66,13 @@ contextBridge.exposeInMainWorld('electron', {
   isValidYouTubeUrl,
 });
 
+ipcRenderer.on(IpcEvent.YtdlpDownloadProgress, (_, arg: string) => {
+  const input = getInput();
+  input.value = `yt-dlp download ${arg} complete`;
+});
+
 ipcRenderer.on(IpcEvent.DownloadProgress, (_, arg: string) => {
-  const input = document.querySelector('#js-urlInput') as HTMLInputElement;
+  const input = getInput();
   input.value = arg;
 });
 
@@ -59,4 +82,12 @@ async function getClipboardContents(): Promise<string> {
 
 function isValidYouTubeUrl(url: string): boolean {
   return /^https:\/\/.*?youtube\.com/.test(url);
+}
+
+function getInput(): HTMLInputElement {
+  return document.querySelector('#js-urlInput') as HTMLInputElement;
+}
+
+function getSubmitButton(): HTMLButtonElement {
+  return document.querySelector('#js-submitButton') as HTMLButtonElement;
 }

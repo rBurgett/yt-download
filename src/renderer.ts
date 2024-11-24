@@ -35,8 +35,8 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   const input = getInput();
   const submitButton = getSubmitButton();
+  const url = input.value;
   try {
-    const url = input.value;
     if (!window.electron.isValidYouTubeUrl(url)) {
       throw new Error('Invalid URL');
     }
@@ -50,6 +50,7 @@ form.addEventListener('submit', async e => {
       alert(`Successfully downloaded: ${filename}`);
     }
   } catch(err) {
+    input.value = url;
     input.readOnly = false;
     submitButton.disabled = false;
     alert(`Oops! ${err}`);
